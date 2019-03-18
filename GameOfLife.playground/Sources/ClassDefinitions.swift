@@ -19,8 +19,9 @@ enum environment {
     static let nLines: Int = 33
     static let nColumns: Int = 36
     //constants about colors
-    static let aliveCellColor: UIColor = .green
+    static let aliveCellColor: UIColor = UIColor(red: 0.984, green: 0.619, blue: 0.301, alpha: 1)
     static let deadCellColor: UIColor = UIColor(red: 0.890, green: 0.890, blue: 0.890, alpha: 1)
+    static let textColor: UIColor = UIColor(red: 0.078, green: 0.686, blue: 0.670, alpha: 1)
 }
 
 public class Cell: UIButton {
