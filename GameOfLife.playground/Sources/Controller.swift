@@ -3,6 +3,10 @@ import UIKit
 
 public class Controller: ButtonDelegate {
     var board: [[Cell]]
+    public var isRunning: Bool = false //var that keeps track if the game should be static or evolving
+    public var speed: Double = 2 //speed of the game evolution
+    var kill: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the alive cells that should die
+    var live: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the dead cells that sould live
     
     public init(myView: MyView) {
         self.board = myView.config()
@@ -11,22 +15,38 @@ public class Controller: ButtonDelegate {
     
     
     public func buttonDidPress(_ button: UIButton) {
-        if button.currentTitle == "Play"{
-            button.setTitle("Stop", for: .normal)
-        }
-        else if button.currentTitle == "Stop"{
-            button.setTitle("Play", for: .normal)
-        }
-        else if button.currentTitle == "Step" { //the label on the button changes before this function is calledd
-            step(button: button)
+        
+        guard let kind = ButtonTexts(rawValue: button.currentTitle ?? "") else { return }
+        
+        switch(kind){
+        case .Play:
+            button.setTitle(ButtonTexts.Stop.rawValue, for: .normal)
+            isRunning = true
+            start()
+        case .Stop:
+            button.setTitle(ButtonTexts.Play.rawValue, for: .normal)
+            isRunning = false
+        case .Step:
+            step()
+        case .Clear:
+            clear()
         }
     }
     
-    public func step(button: UIButton) { //simulates one step on the board
+    public func start() {
+        if isRunning {
+            step()
+            DispatchQueue.main.asyncAfter(deadline: .now() + (1/(1 + speed))) {
+                self.start()
+            }
+        }
+    }
+    
+    public func step() { //simulates one step on the board
         var aliveNeighbours: Int = 0
-        var kill: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the alive cells that should die
-        var live: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the dead cells that sould live
-            
+//        var kill: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the alive cells that should die
+//        var live: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the dead cells that sould live
+        
         //scans the board and find which cells would change
         for (lineIndex, line) in board.enumerated() { //goes through each line
             for (columnIndex, column) in line.enumerated() { //goes through each column
@@ -56,6 +76,10 @@ public class Controller: ButtonDelegate {
             for cell in live {
                 board[cell.line][cell.column].alive = true
             }
+        
+        //making sure that theres no leftover on the control array
+        kill = []
+        live = []
     }
     
     public func checkNeighbours(cell: Cell) -> Int{ //check how many of the cell's neighbours are still alive
@@ -69,5 +93,25 @@ public class Controller: ButtonDelegate {
         
         return aliveNeighbours
     }
+    
+    public func clear() {
+        var kill: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the alive cells that should die
+        
+        for (lineIndex, line) in self.board.enumerated() { //goes through each line
+            for (columnIndex, column) in line.enumerated() {
+                if column.alive{
+                    kill.append((line: lineIndex, column: columnIndex))
+                }
+            }
+        }
+        
+        //changes alive cells to dead when appropriate
+        for cell in kill {
+            board[cell.line][cell.column].alive = false
+        }
+        
+        kill = []
+    }
+    
 }
 

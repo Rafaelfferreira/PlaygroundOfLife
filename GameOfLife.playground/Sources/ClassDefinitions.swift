@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-enum environment {
+enum Environment {
     //constants about the size of the playground
     static let screenWidth: Int = 1000
     static let screenHeight: Int = 1000
@@ -24,14 +24,22 @@ enum environment {
     static let textColor: UIColor = UIColor(red: 0.078, green: 0.686, blue: 0.670, alpha: 1)
 }
 
+//the labels of the buttons on the playground
+enum ButtonTexts: String {
+    case Play = "Play"
+    case Stop = "Stop"
+    case Clear = "Clear"
+    case Step = "Step"
+}
+
 public class Cell: UIButton {
     var alive: Bool {
         didSet { //observer that runs this code everytime the value of alive changes
             if alive == true {
-                self.backgroundColor = environment.aliveCellColor
+                self.backgroundColor = Environment.aliveCellColor
             }
             else {
-                self.backgroundColor = environment.deadCellColor
+                self.backgroundColor = Environment.deadCellColor
             }
         }
     }
@@ -54,9 +62,9 @@ public class Cell: UIButton {
     public func findNeighbours(position: (line: Int,row: Int)) -> [(Int,Int)] {
         var validNeighbours: [(Int, Int)] = []
         for line in (position.line - 2)...(position.line) { //checking the lines above and below the current cell
-            if line >= 0 && line < environment.nLines { //making sure the line is valid //PROVAVEL QUE TENHA QUE DIMINUIR 1 DAQUI
+            if line >= 0 && line < Environment.nLines { //making sure the line is valid //PROVAVEL QUE TENHA QUE DIMINUIR 1 DAQUI
                 for row in (position.row - 2)...(position.row) { //checking the rows before and after the current cell
-                    if row >= 0 && row < environment.nColumns { //checking that the row is a valid one //PROVAVEL QUE TENHA QUE DIMINUIT 1 DAQUI TBM
+                    if row >= 0 && row < Environment.nColumns { //checking that the row is a valid one //PROVAVEL QUE TENHA QUE DIMINUIT 1 DAQUI TBM
                         if line != position.line-1 || row != position.row-1 {
                             validNeighbours.append((line, row))
                         }
