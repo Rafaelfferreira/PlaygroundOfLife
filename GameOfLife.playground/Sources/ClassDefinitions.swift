@@ -22,6 +22,7 @@ enum Environment {
     static let aliveCellColor: UIColor = UIColor(red: 0.984, green: 0.619, blue: 0.301, alpha: 1)
     static let deadCellColor: UIColor = UIColor(red: 0.890, green: 0.890, blue: 0.890, alpha: 1)
     static let textColor: UIColor = UIColor(red: 0.078, green: 0.686, blue: 0.670, alpha: 1)
+    static let secondaryColor: UIColor = UIColor(red: 0.447, green: 0.290, blue: 0.670, alpha: 1)
 }
 
 //the labels of the buttons on the playground
@@ -62,9 +63,9 @@ public class Cell: UIButton {
     public func findNeighbours(position: (line: Int,row: Int)) -> [(Int,Int)] {
         var validNeighbours: [(Int, Int)] = []
         for line in (position.line - 2)...(position.line) { //checking the lines above and below the current cell
-            if line >= 0 && line < Environment.nLines { //making sure the line is valid //PROVAVEL QUE TENHA QUE DIMINUIR 1 DAQUI
+            if line >= 0 && line < Environment.nLines { //making sure the line is valid
                 for row in (position.row - 2)...(position.row) { //checking the rows before and after the current cell
-                    if row >= 0 && row < Environment.nColumns { //checking that the row is a valid one //PROVAVEL QUE TENHA QUE DIMINUIT 1 DAQUI TBM
+                    if row >= 0 && row < Environment.nColumns { //checking that the row is a valid one 
                         if line != position.line-1 || row != position.row-1 {
                             validNeighbours.append((line, row))
                         }

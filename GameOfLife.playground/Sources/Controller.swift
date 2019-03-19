@@ -1,21 +1,25 @@
 import Foundation
 import UIKit
 
-public class Controller: ButtonDelegate {
+public class Controller: ButtonDelegate, StepperDelegate {
     var board: [[Cell]]
     public var isRunning: Bool = false //var that keeps track if the game should be static or evolving
-    public var speed: Double = 2 //speed of the game evolution
+    public var speed: Double = 1 //speed of the game evolution
     var kill: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the alive cells that should die
     var live: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the dead cells that sould live
     
     public init(myView: MyView) {
         self.board = myView.config()
         myView.delegate = self //sets the controller as the delegate of myView
+        myView.stepperDelegate = self
     }
     
     
+    public func stepperValueChanged(_ button: UIStepper) {
+        speed = button.value
+    }
+    
     public func buttonDidPress(_ button: UIButton) {
-        
         guard let kind = ButtonTexts(rawValue: button.currentTitle ?? "") else { return }
         
         switch(kind){
@@ -36,7 +40,7 @@ public class Controller: ButtonDelegate {
     public func start() {
         if isRunning {
             step()
-            DispatchQueue.main.asyncAfter(deadline: .now() + (1/(1 + speed))) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + (1/(1.5*speed))) {
                 self.start()
             }
         }
@@ -44,9 +48,7 @@ public class Controller: ButtonDelegate {
     
     public func step() { //simulates one step on the board
         var aliveNeighbours: Int = 0
-//        var kill: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the alive cells that should die
-//        var live: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the dead cells that sould live
-        
+
         //scans the board and find which cells would change
         for (lineIndex, line) in board.enumerated() { //goes through each line
             for (columnIndex, column) in line.enumerated() { //goes through each column
