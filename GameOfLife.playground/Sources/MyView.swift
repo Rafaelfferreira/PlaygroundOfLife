@@ -67,11 +67,12 @@ public class MyView: UIView {
         createDefaultButton(buttonLabel: ButtonTexts.Clear.rawValue, posX: 2, posY: 44.5)
         
         //Setting up the speed button with an UIStepper
-        let speedButton = UIStepper(frame: CGRect(x: buttonSize.width * CGFloat(9.75), y: (CGFloat(42) * buttonSize.height), width: buttonSize.width, height: buttonSize.height))
+        let speedButton = UIStepper(frame: CGRect(x: buttonSize.width * CGFloat(9.75), y: (CGFloat(42) * buttonSize.height), width: buttonSize.width*0.5, height: buttonSize.height*0.5))
         speedButton.minimumValue = 1
         speedButton.maximumValue = 3
         speedButton.autorepeat = false
         speedButton.tintColor = UIColor.white
+        speedButton.layer.cornerRadius = 5
         speedButton.backgroundColor = Environment.textColor
         speedButton.addTarget(self, action: #selector(stepperValueChanged(sender:)), for: .valueChanged)
         self.addSubview(speedButton)
@@ -89,17 +90,17 @@ public class MyView: UIView {
         self.addSubview(speedNumber)
         
         //Setting up the rules title
-        let rulesLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(17), y: (CGFloat(41) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
+        let rulesLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(17), y: (CGFloat(40.5) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
         rulesLabel.text = "Rules"
         rulesLabel.textColor = Environment.textColor
         rulesLabel.font = UIFont.boldSystemFont(ofSize: rulesLabel.font.pointSize+8.5)
         self.addSubview(rulesLabel)
         
         //setting rules
-        addRules(ruleText: "Each cell with less than 2 neighbors dies by underpopulation.", posX: 17, posY: 42.5)
-        addRules(ruleText: "Each cell with more than 3 neighbors dies by overpopulation.", posX: 17, posY: 43.5)
-        addRules(ruleText: "Each cell with two or three neighbors survives.", posX: 17, posY: 44.5)
-        addRules(ruleText: "If a dead cell has three neighbors it comes alive.", posX: 17, posY: 45.5)
+        addRules(ruleText: "Each cell with less than 2 neighbors dies by underpopulation.", posX: 17, posY: 42)
+        addRules(ruleText: "Each cell with more than 3 neighbors dies by overpopulation.", posX: 17, posY: 43)
+        addRules(ruleText: "Each cell with two or three neighbors survives.", posX: 17, posY: 44)
+        addRules(ruleText: "If a dead cell has three neighbors it comes alive.", posX: 17, posY: 45)
         
         //setting the titleLabel
         let titleLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(11.5), y: (CGFloat(1.5) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height*2))
