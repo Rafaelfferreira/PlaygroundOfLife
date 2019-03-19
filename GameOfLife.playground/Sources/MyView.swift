@@ -12,11 +12,11 @@ public class MyView: UIView {
         
         var board: [[Cell]] = [] //and array of arrays that stores each pixel on the board
         
-        //initializing the buttons
-        //initializing the line of buttons
+        //initializing the board:
+        //initializing the current line of cells
         for line in 1...(environment.nLines){ //from 1 because the first space is a blank
             var columnButtons: [Cell] = []
-            //initializing the buttons in a column
+            //initializing the current column of cells
             for column in 1...(environment.nColumns) {
                 
                 let button = Cell(frame: CGRect(x: (buttonSize.width * CGFloat(column)), y: (CGFloat(5 + line) * buttonSize.height), width: buttonSize.width, height: buttonSize.height), position: (line,column))
@@ -43,8 +43,23 @@ public class MyView: UIView {
         playButton.setTitle("Play", for: .normal)
         playButton.setTitleColor(environment.textColor, for: .normal)
         playButton.titleLabel?.font = UIFont.systemFont(ofSize: 20.0)
-        playButton.addTarget(self, action: #selector(PlayButton), for: .touchUpInside)
+        playButton.addTarget(self, action: #selector(buttonDelegate), for: .touchUpInside)
         self.addSubview(playButton)
+        
+        //Setting up the step button
+        let stepButton = UIButton(frame: CGRect(x: buttonSize.width * 9, y: (CGFloat(44.5) * buttonSize.height), width: 6 * buttonSize.width, height: buttonSize.height * 3.6))
+        //making it round
+        stepButton.backgroundColor = .clear
+        stepButton.layer.cornerRadius = 20
+        stepButton.layer.borderWidth = 1
+        stepButton.layer.borderColor = UIColor.black.cgColor
+        //adding the text
+        stepButton.setTitle("Step", for: .normal)
+        stepButton.setTitleColor(environment.textColor, for: .normal)
+        stepButton.titleLabel?.font = UIFont.systemFont(ofSize: 20.0)
+        stepButton.addTarget(self, action: #selector(buttonDelegate), for: .touchUpInside)
+        self.addSubview(stepButton)
+        
         
         //---------------------------------------------------------------------------------------------------------------------------------------------
         //DECLARAR O RESTANTE DOS BOTOES AQUI
@@ -58,43 +73,13 @@ public class MyView: UIView {
         //---------------------------------------------------------------------------------------------------------------------------------------------
         //TESTES QUE VAO SER EXCLUIDOS
         //---------------------------------------------------------------------------------------------------------------------------------------------
-        //testando selecionar um botao e mostrar seus vizinhos
-        board[8][16].alive = true
-        for neighbour in board[8][16].neighbours {
-            board[neighbour.line][neighbour.column].backgroundColor = .blue
-        }
-        //TESTANDO UM CASO EXTREMO DE BOTAO E SEUS VIZINHOS - parte 1 cantos
-        board[0][0].alive = true
-        for neighbour in board[0][0].neighbours {
-            board[neighbour.line][neighbour.column].backgroundColor = .blue
-        }
+        board[14][14].alive = true
+        board[15][15].alive = true
+        board[16][16].alive = true
         
-        board[environment.nLines-1][environment.nColumns-1].alive = true
-        for neighbour in board[environment.nLines-1][environment.nColumns-1].neighbours {
-            board[neighbour.line][neighbour.column].backgroundColor = .blue
-        }
-        
-        board[0][environment.nColumns-1].alive = true
-        for neighbour in board[0][environment.nColumns-1].neighbours {
-            board[neighbour.line][neighbour.column].backgroundColor = .blue
-        }
-        
-        board[environment.nLines-1][0].alive = true
-        for neighbour in board[environment.nLines-1][0].neighbours {
-            board[neighbour.line][neighbour.column].backgroundColor = .blue
-        }
-        
-        //TESTANDO UM CASO EXTREMO DE BOTAO E SEUS VIZINHOS - parte 2 lados
-        board[0][12].alive = true
-        for neighbour in board[0][12].neighbours {
-            board[neighbour.line][neighbour.column].backgroundColor = .blue
-        }
-        
-        board[15][0].alive = true
-        for neighbour in board[15][0].neighbours {
-            board[neighbour.line][neighbour.column].backgroundColor = .blue
-        }
-        //-----------------------------------------------
+//        for neighbour in board[15][15].neighbours {
+//                        board[neighbour.line][neighbour.column].backgroundColor = .blue
+//        }
         
         return board
     }
@@ -104,14 +89,14 @@ public class MyView: UIView {
         sender.alive = !sender.alive
     }
     
-    @objc func PlayButton(sender: UIButton) {
+    @objc func buttonDelegate(sender: UIButton) {
         delegate?.buttonDidPress(sender)
-        if (sender.currentTitle == "Play") {
-            sender.setTitle("Stop", for: .normal)
-        }
-        else {
-            sender.setTitle("Play", for: .normal)
-        }
+//        if (sender.currentTitle == "Play") {
+//            sender.setTitle("Stop", for: .normal)
+//        }
+//        else if (sender.currentTitle == "Stop"){
+//            sender.setTitle("Play", for: .normal)
+//        }
     }
 }
 

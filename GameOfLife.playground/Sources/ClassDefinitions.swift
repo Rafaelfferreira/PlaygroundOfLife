@@ -43,7 +43,6 @@ public class Cell: UIButton {
         self.alive = false
         self.active = true
         self.position = position
-         //AO INVES DE INSTANCIAR VAZIO VAI FAZER A CHAMADA DA FUNCAO QUE CALCULA OS NUMEROS VALIDOS DE VIZINHOS
         super.init(frame: frame)
         self.neighbours = self.findNeighbours(position: position)
     }
