@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public class Controller: ButtonDelegate, StepperDelegate {
+public class Controller: ButtonDelegate {
     var board: [[Cell]]
     public var isRunning: Bool = false //var that keeps track if the game should be static or evolving
     public var speed: Double = 1 //speed of the game evolution
@@ -11,12 +11,6 @@ public class Controller: ButtonDelegate, StepperDelegate {
     public init(myView: MyView) {
         self.board = myView.config()
         myView.delegate = self //sets the controller as the delegate of myView
-        myView.stepperDelegate = self
-    }
-    
-    
-    public func stepperValueChanged(_ button: UIStepper) {
-        speed = button.value
     }
     
     public func buttonDidPress(_ button: UIButton) {
@@ -34,6 +28,14 @@ public class Controller: ButtonDelegate, StepperDelegate {
             step()
         case .Clear:
             clear()
+        case .Minus:
+            if speed > 1 {
+                speed -= 1
+            }
+        case .Plus:
+            if speed < 3 {
+                speed += 3
+            }
         }
     }
     

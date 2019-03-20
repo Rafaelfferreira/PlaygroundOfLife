@@ -14,10 +14,10 @@ enum Environment {
     //constants about the size of the playground
     static let screenWidth: Int = 1000
     static let screenHeight: Int = 1000
-    static let proportionButton: Int = 50
-    static let proportionGrid: Int = 25
-    static let nLines: Int = 33
-    static let nColumns: Int = 36
+    static let proportionButton: Int = 80
+    static let proportionGrid: Int = 60
+    static let nLines: Int = 28
+    static let nColumns: Int = 28
     //constants about colors
     static let aliveCellColor: UIColor = UIColor(red: 0.984, green: 0.619, blue: 0.301, alpha: 1)
     static let deadCellColor: UIColor = UIColor(red: 0.890, green: 0.890, blue: 0.890, alpha: 1)
@@ -31,6 +31,8 @@ enum ButtonTexts: String {
     case Stop = "Stop"
     case Clear = "Clear"
     case Step = "Step"
+    case Plus = "+"
+    case Minus = "-"
 }
 
 public class Cell: UIButton {
@@ -75,4 +77,12 @@ public class Cell: UIButton {
         }
         return validNeighbours
     }
+}
+
+protocol ButtonDelegate: class { //delegates the managing of a button to another class
+    func buttonDidPress(_ button: UIButton)
+}
+
+protocol StepperDelegate: class {
+    func stepperValueChanged(_ stepper: UIStepper)
 }
