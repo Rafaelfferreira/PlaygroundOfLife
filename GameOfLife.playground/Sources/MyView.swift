@@ -9,7 +9,7 @@ public class MyView: UIView {
     var speedNumber: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0)) //the only label on the view that needs to be constantly updated
     let buttonSize = CGSize(width: Int(Environment.screenWidth)/Environment.proportionGrid, height: Int(Environment.screenHeight)/Environment.proportionGrid)
     
-    //function that creates buttons with the default style of the playground.
+    //function that creates buttons with the default style of this playground.
     //the X and Y positions are relative to the width and the height of the cells
     func createDefaultButton(buttonLabel: String, posX: Double, posY: Double){ //-> UIButton{
         let returnButton = UIButton(frame: CGRect(x: buttonSize.width * CGFloat(posX), y: (CGFloat(posY) * buttonSize.height), width: 4.5 * buttonSize.width, height: buttonSize.height * 1.25))
@@ -31,6 +31,7 @@ public class MyView: UIView {
         self.addSubview(returnButton)
     }
     
+    //create the top buttons that store the different patterns of the game
     func createPatternButton(buttonLabel: String, posX: Double, posY: Double){ //-> UIButton{
         let returnButton = UIButton(frame: CGRect(x: buttonSize.width * CGFloat(posX), y: (CGFloat(posY) * buttonSize.height), width: 5.4 * buttonSize.width, height: buttonSize.height * 1))
         //making it rounder
@@ -47,6 +48,7 @@ public class MyView: UIView {
         self.addSubview(returnButton)
     }
     
+    //function that create the + and - rounded buttons
     func createRoundButton(buttonLabel: String, posX: Double, posY: Double) {
         let returnButton = UIButton(frame: CGRect(x: buttonSize.width * CGFloat(posX), y: (CGFloat(posY) * buttonSize.height), width: 1.25 * buttonSize.width, height: buttonSize.height * 1.25))
         //making it rounder
@@ -63,6 +65,7 @@ public class MyView: UIView {
         self.addSubview(returnButton)
     }
     
+    //function that add the rules on plain text
     func addRules(ruleText: String, posX: Double, posY: Double) {
         let rule = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(posX), y: (CGFloat(posY) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
         rule.text = ruleText
@@ -70,6 +73,7 @@ public class MyView: UIView {
         self.addSubview(rule)
     }
     
+    //configuring the normal play-style of the board (to just experiment)
     public func configPlay() -> ([[Cell]])
     {
         var board: [[Cell]] = [] //and array of arrays that stores each pixel on the board
@@ -140,6 +144,7 @@ public class MyView: UIView {
         return board
     }
     
+    //configuring the domination style challenge
     public func configDomination() -> ([[Cell]]) {
         var board: [[Cell]] = [] //and array of arrays that stores each pixel on the board
         let buttonSize = CGSize(width: 35, height: 35)
@@ -151,7 +156,6 @@ public class MyView: UIView {
             var columnButtons: [Cell] = []
             //initializing the current column of cells
             for column in 1...(8) {
-                
                 let button = Cell(frame: CGRect(x: ((buttonSize.width) * CGFloat(column) + 65), y: (CGFloat(3 + line) * buttonSize.height), width: buttonSize.width, height: buttonSize.height), position: (line,column), boardSize: (8,8))
                 
                 button.position = (line, column)
@@ -173,12 +177,14 @@ public class MyView: UIView {
         titleLabel.font = UIFont.boldSystemFont(ofSize: titleLabel.font.pointSize)
         self.addSubview(titleLabel)
         
+        //setting up the label on the title of the rules
         let rulesLabel = UILabel(frame: CGRect(x: 100, y: 510, width: buttonSize.width*20, height: buttonSize.height))
         rulesLabel.text = "Life rules"
         rulesLabel.textColor = Environment.textColor
         rulesLabel.font = UIFont.boldSystemFont(ofSize: rulesLabel.font.pointSize)
         self.addSubview(rulesLabel)
         
+        //Addindg the playButton - THIS NAME IS PROBABLY GOING TO CHANGE
         let returnButton = UIButton(frame: CGRect(x: 150, y: 440, width: buttonSize.width * 1.25, height: buttonSize.height * 1.25))
         //making it rounder
         returnButton.backgroundColor = .clear
@@ -199,6 +205,7 @@ public class MyView: UIView {
         addRules(ruleText: "Each cell with two or three neighbors survives.", posX: 6.3, posY: 35.1)
         addRules(ruleText: "If a dead cell has three neighbors it comes alive.", posX: 6.3, posY: 35.9)
         
+        //setting um the RPentomino starting pattern
         setRPentominoDom(board: board)
         
         return board
@@ -221,10 +228,6 @@ public class MyView: UIView {
     
     //what happens when you click a cell
     @objc func dominationCellAction(sender: Cell!) {
-        sender.alive = !sender.alive
-        if sender.alive == true {
-            sender.backgroundColor = Environment.friendColor
-        }
         domDelegate?.cellDidPress(sender)
     }
     
@@ -253,6 +256,7 @@ public class MyView: UIView {
         }
     }
     
+    //updating the number of neighbours displayed on each cell
     public func updateNeighbours(board: [[Cell]]) {
         for line in board {
             for column in line {
@@ -269,6 +273,7 @@ public class MyView: UIView {
     }
 }
 
+//function that starts the playground view, this happens in a function to hide the view creation from the user
 public func conwaysLife() -> MyView{
     let view = MyView(frame: CGRect(x: 20, y: 0, width: 480, height: 600))
     return view

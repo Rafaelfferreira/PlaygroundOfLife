@@ -8,7 +8,9 @@ public class Controller: ButtonDelegate, domDelegate {
     public var speed: Double = 1 //speed of the game evolution
     var kill: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the alive cells that should die
     var live: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the dead cells that sould live
+    var locked: Bool = false //var that keeps track if the board is in a interactive state or not
     
+    //initializing the right kind of view based on the input of the user on the playground screen
     public init(mode: String, myView: MyView) {
         self.mode = mode
         if mode.uppercased() == "PLAY" {
@@ -21,15 +23,33 @@ public class Controller: ButtonDelegate, domDelegate {
         myView.domDelegate = self
     }
     
-    public func cellDidPress(_ button: UIButton) {
-        updateNeighbours()
+    //a cell was pressed on DOMINATION mode
+    public func cellDidPress(_ button: Cell) {
+        if locked == false {
+            button.alive = !button.alive
+            button.active = true
+            if button.alive == true {
+                button.backgroundColor = Environment.friendColor
+            }
+            locked = true
+            updateNeighbours()
+        }
+        else {
+            if button.active == true {
+                locked = false
+                button.alive = !button.alive
+                updateNeighbours()
+            }
+        }
     }
     
-    
+    //the player pressed the playButton on DOMINATION mode
     public func playDidPressDom(_ button: UIButton) {
         dominationStep()
+        locked = false
     }
     
+    //handling all the button presses on the "play" mode
     public func buttonDidPress(_ button: UIButton) {
         guard let kind = ButtonTexts(rawValue: button.currentTitle ?? "") else { return }
         
@@ -72,6 +92,7 @@ public class Controller: ButtonDelegate, domDelegate {
         }
     }
     
+    //Starts the auto running on the program
     public func start() {
         if isRunning {
             step()
@@ -81,7 +102,8 @@ public class Controller: ButtonDelegate, domDelegate {
         }
     }
     
-    public func step() { //simulates one step on the board
+    //simulates one step on the board
+    public func step() {
         var aliveNeighbours: Int = 0
         //scans the board and find which cells would change
         for (lineIndex, line) in board.enumerated() { //goes through each line
@@ -117,7 +139,8 @@ public class Controller: ButtonDelegate, domDelegate {
         live = []
     }
     
-    public func dominationStep() { //simulates one step on the board
+    //one step on domination mode
+    public func dominationStep() {
         var aliveNeighbours: Int = 0
         //scans the board and find which cells would change
         for (lineIndex, line) in board.enumerated() { //goes through each line

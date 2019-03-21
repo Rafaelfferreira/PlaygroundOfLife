@@ -42,6 +42,7 @@ enum ButtonTexts: String {
     case Glider = "Glider"
 }
 
+//Cell is the class of the interactive objects on the board
 public class Cell: UIButton {
     var alive: Bool {
         didSet { //observer that runs this code everytime the value of alive changes
@@ -60,7 +61,7 @@ public class Cell: UIButton {
     
     public init(frame: CGRect, position: (Int,Int), boardSize: (Int, Int)) {
         self.alive = false
-        self.active = true
+        self.active = false
         self.position = position
         self.boardSize = boardSize
         super.init(frame: frame)
@@ -93,6 +94,6 @@ protocol ButtonDelegate: class { //delegates the managing of a button to another
 }
 
 protocol domDelegate: class {
-    func cellDidPress(_ button: UIButton)
+    func cellDidPress(_ button: Cell)
     func playDidPressDom(_ button: UIButton)
 }
