@@ -22,7 +22,12 @@ public class Controller: ButtonDelegate, domDelegate {
     }
     
     public func cellDidPress(_ button: UIButton) {
-        step()
+        updateNeighbours()
+    }
+    
+    
+    public func playDidPressDom(_ button: UIButton) {
+        dominationStep()
     }
     
     public func buttonDidPress(_ button: UIButton) {
@@ -112,6 +117,60 @@ public class Controller: ButtonDelegate, domDelegate {
         live = []
     }
     
+    public func dominationStep() { //simulates one step on the board
+        var aliveNeighbours: Int = 0
+        //scans the board and find which cells would change
+        for (lineIndex, line) in board.enumerated() { //goes through each line
+            for (columnIndex, column) in line.enumerated() { //goes through each column
+                aliveNeighbours = checkNeighbours(cell: column)
+                if (column.alive == false) { //testing the conditions on dead cells
+                    if aliveNeighbours == 3 {
+                        live.append((line: lineIndex, column: columnIndex))
+                    }
+                }
+                else { //testing the condition on alive cells
+                    if aliveNeighbours < 2 { //if an alive cell has less than 2 neighbours it dies
+                        kill.append((line: lineIndex, column: columnIndex))
+                    }
+                    else if aliveNeighbours > 3{
+                        kill.append((line: lineIndex, column: columnIndex))
+                    }
+                }
+            }
+        }
+        
+        //changes alive cells to dead when appropriate
+        for cell in kill {
+            board[cell.line][cell.column].alive = false
+        }
+        //changes dead cells to alive when appropriate
+        for cell in live {
+            var redNeighbours = 0
+            var blueNeighbours = 0
+            board[cell.line][cell.column].alive = true
+            
+            for neighbour in board[cell.line][cell.column].neighbours { //see how many friendly and unfriendly neighbours it has
+                if board[neighbour.line][neighbour.column].backgroundColor == Environment.aliveCellColor {
+                    redNeighbours += 1
+                }
+                else if board[neighbour.line][neighbour.column].backgroundColor == Environment.friendColor {
+                    blueNeighbours += 1
+                }
+            }
+            if blueNeighbours > redNeighbours {
+                board[cell.line][cell.column].backgroundColor = Environment.friendColor
+            }
+            
+        }
+        
+        //making sure that theres no leftover on the control array
+        kill = []
+        live = []
+        
+        updateNeighbours()
+        
+    }
+    
     public func checkNeighbours(cell: Cell) -> Int{ //check how many of the cell's neighbours are still alive
         var aliveNeighbours: Int = 0
         for neighbour in cell.neighbours {
@@ -195,6 +254,21 @@ public class Controller: ButtonDelegate, domDelegate {
         
         reliveCells(live: live)
         live = []
+    }
+    
+    public func updateNeighbours() {
+        for line in board {
+            for column in line {
+                var aliveNeighbours = 0
+                for neighbour in column.neighbours { //counts how many alive neighbours does it have
+                    if board[neighbour.line][neighbour.column].alive == true {
+                        aliveNeighbours += 1
+                    }
+                }
+                column.setTitle("\(aliveNeighbours)", for: .normal)
+            }
+        }
+
     }
     
 }

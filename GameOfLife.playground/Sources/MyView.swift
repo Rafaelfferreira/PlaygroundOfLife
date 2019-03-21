@@ -111,13 +111,6 @@ public class MyView: UIView {
         createPatternButton(buttonLabel: ButtonTexts.TenCellRow.rawValue, posX: 18, posY: 2.8)
         createPatternButton(buttonLabel: ButtonTexts.Glider.rawValue, posX: 23.6, posY: 2.8)
         
-        //Setting up the UILabels
-//        let speedLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(6.6), y: (CGFloat(32.2) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
-//        speedLabel.text = "Speed"
-//        speedLabel.textColor = Environment.textColor
-//        speedLabel.font = UIFont.boldSystemFont(ofSize: speedLabel.font.pointSize+1)
-//        self.addSubview(speedLabel)
-        
         //setting up the stater value of the speedNumber label
         speedNumber = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(7.65), y: (CGFloat(33.90) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
         speedNumber.text = "1x"
@@ -186,13 +179,39 @@ public class MyView: UIView {
         rulesLabel.font = UIFont.boldSystemFont(ofSize: rulesLabel.font.pointSize)
         self.addSubview(rulesLabel)
         
+        let returnButton = UIButton(frame: CGRect(x: 150, y: 440, width: buttonSize.width * 1.25, height: buttonSize.height * 1.25))
+        //making it rounder
+        returnButton.backgroundColor = .clear
+        returnButton.layer.cornerRadius = 10
+        returnButton.layer.borderWidth = 1
+        returnButton.layer.borderColor = Environment.textColor.cgColor//UIColor.black.cgColor
+        //adding the text
+        returnButton.setTitle("Play", for: .normal)
+        returnButton.backgroundColor = UIColor.white
+        returnButton.setTitleColor(Environment.textColor, for: .normal)
+        returnButton.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+        returnButton.addTarget(self, action: #selector(playButtonDomination), for: .touchUpInside)
+        self.addSubview(returnButton)
+        
         //setting rules
         addRules(ruleText: "Each cell with less than 2 neighbors dies by underpopulation.", posX: 6.3, posY: 33.5)
         addRules(ruleText: "Each cell with more than 3 neighbors dies by overpopulation.", posX: 6.3, posY: 34.3)
         addRules(ruleText: "Each cell with two or three neighbors survives.", posX: 6.3, posY: 35.1)
         addRules(ruleText: "If a dead cell has three neighbors it comes alive.", posX: 6.3, posY: 35.9)
         
+        setRPentominoDom(board: board)
+        
         return board
+    }
+    
+    public func setRPentominoDom(board: [[Cell]]) {
+        board[3][3].alive = true
+        board[3][4].alive = true
+        board[4][2].alive = true
+        board[4][3].alive = true
+        board[5][3].alive = true
+        
+        updateNeighbours(board: board)
     }
     
     //what happens when you click a cell
@@ -202,9 +221,15 @@ public class MyView: UIView {
     
     //what happens when you click a cell
     @objc func dominationCellAction(sender: Cell!) {
-        domDelegate?.cellDidPress(sender)
         sender.alive = !sender.alive
-        sender.backgroundColor = Environment.friendColor
+        if sender.alive == true {
+            sender.backgroundColor = Environment.friendColor
+        }
+        domDelegate?.cellDidPress(sender)
+    }
+    
+    @objc func playButtonDomination(sender: UIButton!) {
+        domDelegate?.playDidPressDom(sender)
     }
     
     @objc func buttonDelegate(sender: UIButton) {
@@ -226,6 +251,21 @@ public class MyView: UIView {
         default:
             self.speedNumber.text = "x"
         }
+    }
+    
+    public func updateNeighbours(board: [[Cell]]) {
+        for line in board {
+            for column in line {
+                var aliveNeighbours = 0
+                for neighbour in column.neighbours { //counts how many alive neighbours does it have
+                    if board[neighbour.line][neighbour.column].alive == true {
+                        aliveNeighbours += 1
+                    }
+                }
+                column.setTitle("\(aliveNeighbours)", for: .normal)
+            }
+        }
+        
     }
 }
 

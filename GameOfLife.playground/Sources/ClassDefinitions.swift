@@ -94,4 +94,5 @@ protocol ButtonDelegate: class { //delegates the managing of a button to another
 
 protocol domDelegate: class {
     func cellDidPress(_ button: UIButton)
+    func playDidPressDom(_ button: UIButton)
 }
