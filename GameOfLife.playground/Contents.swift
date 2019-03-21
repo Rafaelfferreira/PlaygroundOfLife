@@ -3,7 +3,9 @@
 import PlaygroundSupport
 import UIKit
 
-let view = conwaysLife(mode: "play")
-let controller = Controller(myView: view)
+let view = conwaysLife()
+var mode = "Playa"
+
+let controller = Controller(mode: mode, myView: view)
 
 PlaygroundPage.current.liveView = view

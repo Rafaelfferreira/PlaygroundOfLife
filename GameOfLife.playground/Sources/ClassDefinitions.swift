@@ -23,6 +23,7 @@ enum Environment {
     static let deadCellColor: UIColor = UIColor(red: 0.890, green: 0.890, blue: 0.890, alpha: 1)
     static let textColor: UIColor = UIColor(red: 0.396, green: 0.803, blue: 0.490, alpha: 1)
     static let secondaryColor: UIColor = UIColor(red: 0.407, green: 0.282, blue: 0.776, alpha: 1)
+    static let friendColor: UIColor = UIColor(red: 0.537, green: 0.831, blue: 0.898, alpha: 1)
 }
 
 //the labels of the buttons on the playground
@@ -55,11 +56,13 @@ public class Cell: UIButton {
     var active: Bool
     var position: (Int,Int)
     var neighbours: [(line: Int,column: Int)]!
+    var boardSize: (nLines: Int, nColumns: Int)
     
-    public init(frame: CGRect, position: (Int,Int)) {
+    public init(frame: CGRect, position: (Int,Int), boardSize: (Int, Int)) {
         self.alive = false
         self.active = true
         self.position = position
+        self.boardSize = boardSize
         super.init(frame: frame)
         self.neighbours = self.findNeighbours(position: position)
     }
@@ -71,9 +74,9 @@ public class Cell: UIButton {
     public func findNeighbours(position: (line: Int,row: Int)) -> [(Int,Int)] {
         var validNeighbours: [(Int, Int)] = []
         for line in (position.line - 2)...(position.line) { //checking the lines above and below the current cell
-            if line >= 0 && line < Environment.nLines { //making sure the line is valid
+            if line >= 0 && line < boardSize.nLines { //making sure the line is valid
                 for row in (position.row - 2)...(position.row) { //checking the rows before and after the current cell
-                    if row >= 0 && row < Environment.nColumns { //checking that the row is a valid one 
+                    if row >= 0 && row < boardSize.nColumns { //checking that the row is a valid one 
                         if line != position.line-1 || row != position.row-1 {
                             validNeighbours.append((line, row))
                         }
@@ -89,6 +92,6 @@ protocol ButtonDelegate: class { //delegates the managing of a button to another
     func buttonDidPress(_ button: UIButton)
 }
 
-protocol StepperDelegate: class {
-    func stepperValueChanged(_ stepper: UIStepper)
+protocol domDelegate: class {
+    func cellDidPress(_ button: UIButton)
 }

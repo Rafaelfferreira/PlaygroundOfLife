@@ -1,16 +1,28 @@
 import Foundation
 import UIKit
 
-public class Controller: ButtonDelegate {
+public class Controller: ButtonDelegate, domDelegate {
     var board: [[Cell]]
+    var mode: String
     public var isRunning: Bool = false //var that keeps track if the game should be static or evolving
     public var speed: Double = 1 //speed of the game evolution
     var kill: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the alive cells that should die
     var live: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the dead cells that sould live
     
-    public init(myView: MyView) {
-        self.board = myView.configPlay()
+    public init(mode: String, myView: MyView) {
+        self.mode = mode
+        if mode.uppercased() == "PLAY" {
+            self.board = myView.configPlay()
+        }
+        else {
+            self.board = myView.configDomination()
+        }//self.board = myView.configPlay()
         myView.delegate = self //sets the controller as the delegate of myView
+        myView.domDelegate = self
+    }
+    
+    public func cellDidPress(_ button: UIButton) {
+        step()
     }
     
     public func buttonDidPress(_ button: UIButton) {
@@ -66,7 +78,6 @@ public class Controller: ButtonDelegate {
     
     public func step() { //simulates one step on the board
         var aliveNeighbours: Int = 0
-
         //scans the board and find which cells would change
         for (lineIndex, line) in board.enumerated() { //goes through each line
             for (columnIndex, column) in line.enumerated() { //goes through each column
@@ -83,11 +94,10 @@ public class Controller: ButtonDelegate {
                     else if aliveNeighbours > 3{
                         kill.append((line: lineIndex, column: columnIndex))
                     }
-                    //newBoard[indexLine][indexColumn] = board[indexLine][indexColumn]
                 }
             }
         }
-            
+        
             //changes alive cells to dead when appropriate
             for cell in kill {
                 board[cell.line][cell.column].alive = false
@@ -104,13 +114,11 @@ public class Controller: ButtonDelegate {
     
     public func checkNeighbours(cell: Cell) -> Int{ //check how many of the cell's neighbours are still alive
         var aliveNeighbours: Int = 0
-        
         for neighbour in cell.neighbours {
             if board[neighbour.line][neighbour.column].alive == true {
                 aliveNeighbours += 1
             }
         }
-        
         return aliveNeighbours
     }
     
