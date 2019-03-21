@@ -19,10 +19,10 @@ enum Environment {
     static let nLines: Int = 28
     static let nColumns: Int = 28
     //constants about colors
-    static let aliveCellColor: UIColor = UIColor(red: 0.984, green: 0.619, blue: 0.301, alpha: 1)
+    static let aliveCellColor: UIColor = UIColor(red: 0.960, green: 0.678, blue: 0.403, alpha: 1)
     static let deadCellColor: UIColor = UIColor(red: 0.890, green: 0.890, blue: 0.890, alpha: 1)
-    static let textColor: UIColor = UIColor(red: 0.078, green: 0.686, blue: 0.670, alpha: 1)
-    static let secondaryColor: UIColor = UIColor(red: 0.447, green: 0.290, blue: 0.670, alpha: 1)
+    static let textColor: UIColor = UIColor(red: 0.396, green: 0.803, blue: 0.490, alpha: 1)
+    static let secondaryColor: UIColor = UIColor(red: 0.407, green: 0.282, blue: 0.776, alpha: 1)
 }
 
 //the labels of the buttons on the playground
@@ -33,6 +33,12 @@ enum ButtonTexts: String {
     case Step = "Step"
     case Plus = "+"
     case Minus = "-"
+    //strings of pattern names
+    case RPentomino = "R-pentomino"
+    case Flower = "Flower"
+    case Pulsar = "Pulsar"
+    case TenCellRow = "10 Cell Row"
+    case Glider = "Glider"
 }
 
 public class Cell: UIButton {

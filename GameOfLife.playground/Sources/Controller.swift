@@ -9,7 +9,7 @@ public class Controller: ButtonDelegate {
     var live: [(line: Int, column: Int)] = [] //an array that store the coordinates of all the dead cells that sould live
     
     public init(myView: MyView) {
-        self.board = myView.config()
+        self.board = myView.configPlay()
         myView.delegate = self //sets the controller as the delegate of myView
     }
     
@@ -36,6 +36,22 @@ public class Controller: ButtonDelegate {
             if speed < 3 {
                 speed += 3
             }
+        //pattern buttons
+        case .RPentomino:
+            clear()
+            rPentomino()
+        case .Flower:
+            clear()
+            flower()
+        case .Pulsar:
+            clear()
+            pulsar()
+        case .TenCellRow:
+            clear()
+            tenCellRow()
+        case .Glider:
+            clear()
+            glider()
         }
     }
     
@@ -115,6 +131,62 @@ public class Controller: ButtonDelegate {
         }
         
         kill = []
+    }
+    
+    public func reliveCells(live: [(line: Int, column: Int)]) {
+        //changes dead cells to alive when appropriate
+        for cell in live {
+            board[cell.line][cell.column].alive = true
+        }
+    }
+    
+    //functions that active specific patterns they basically append the right coordinates to the live array, call a function that turns all the selected cells on and then empty the array
+    public func rPentomino() {
+        live.append((13,13))
+        live.append((13,14))
+        live.append((14,13))
+        live.append((14,12))
+        live.append((15,13))
+        
+        reliveCells(live: live)
+        live = []
+    }
+    
+    public func flower() {
+        live.append((13,13))
+        live.append((14,13))
+        live.append((14,12))
+        live.append((14,14))
+        live.append((15,12))
+        live.append((15,14))
+        live.append((16,13))
+        
+        reliveCells(live: live)
+        live = [] 
+    }
+    
+    public func pulsar() {
+        let cells = [(12,11),(13,11),(14,11),(15,11),(16,11),(12,13),(16,13),(12,15),(13,15),(14,15),(15,15),(16,15)]
+        live.append(contentsOf: cells)
+
+        reliveCells(live: live)
+        live = [] 
+    }
+    
+    public func tenCellRow() {
+        let cells = [(13,10),(13,11),(13,12),(13,13),(13,14),(13,15),(13,16),(13,17),(13,18)]
+        live.append(contentsOf: cells)
+        
+        reliveCells(live: live)
+        live = [] 
+    }
+    
+    public func glider() {
+        let cells = [(14,13),(14,14),(14,15),(13,15),(12,14)]
+        live.append(contentsOf: cells)
+        
+        reliveCells(live: live)
+        live = []
     }
     
 }

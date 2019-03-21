@@ -8,13 +8,15 @@ public class MyView: UIView {
     var speed: Int = 1//Integer that will store the current speed
     var speedNumber: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0)) //the only label on the view that needs to be constantly updated
     
-    public func config() -> ([[Cell]])
+    public func configPlay() -> ([[Cell]])
     {
         let screenSize = CGRect(x: 0, y: 0, width: Environment.screenWidth, height: Environment.screenHeight) //define the size of the current view
         let buttonSize = CGSize(width: Int(screenSize.width)/Environment.proportionGrid, height: Int(screenSize.width)/Environment.proportionGrid)
         
         var board: [[Cell]] = [] //and array of arrays that stores each pixel on the board
         
+        
+        self.backgroundColor = .white
         //initializing the board:
         //initializing the current line of cells
         for line in 1...(Environment.nLines){ //from 1 because the first space is a blank
@@ -39,7 +41,7 @@ public class MyView: UIView {
         //function that creates buttons with the default style of the playground.
         //the X and Y positions are relative to the width and the height of the cells
         func createDefaultButton(buttonLabel: String, posX: Double, posY: Double){ //-> UIButton{
-            let returnButton = UIButton(frame: CGRect(x: buttonSize.width * CGFloat(posX), y: (CGFloat(posY) * buttonSize.height), width: 4.5 * buttonSize.width, height: buttonSize.height * 1.5))
+            let returnButton = UIButton(frame: CGRect(x: buttonSize.width * CGFloat(posX), y: (CGFloat(posY) * buttonSize.height), width: 4.5 * buttonSize.width, height: buttonSize.height * 1.25))
             //making it rounder
             returnButton.backgroundColor = .clear
             returnButton.layer.cornerRadius = 5
@@ -47,25 +49,45 @@ public class MyView: UIView {
             returnButton.layer.borderColor = Environment.textColor.cgColor//UIColor.black.cgColor
             //adding the text
             returnButton.setTitle(buttonLabel, for: .normal)
-            returnButton.backgroundColor = Environment.textColor
-            returnButton.setTitleColor(UIColor.white, for: .normal)
-            returnButton.titleLabel?.font = UIFont.systemFont(ofSize: 20.0)
+            returnButton.backgroundColor = UIColor.white
+            returnButton.setTitleColor(Environment.textColor, for: .normal)
+            returnButton.titleLabel?.font = UIFont.systemFont(ofSize: 12.0)
+            returnButton.addTarget(self, action: #selector(buttonDelegate), for: .touchUpInside)
+            if buttonLabel == "Play" {
+                returnButton.backgroundColor = Environment.textColor
+                returnButton.setTitleColor(UIColor.white, for: .normal)
+            }
+            self.addSubview(returnButton)
+        }
+        
+        func createPatternButton(buttonLabel: String, posX: Double, posY: Double){ //-> UIButton{
+            let returnButton = UIButton(frame: CGRect(x: buttonSize.width * CGFloat(posX), y: (CGFloat(posY) * buttonSize.height), width: 5.4 * buttonSize.width, height: buttonSize.height * 1))
+            //making it rounder
+            returnButton.backgroundColor = .clear
+            returnButton.layer.cornerRadius = 5
+            returnButton.layer.borderWidth = 1
+            returnButton.layer.borderColor = Environment.textColor.cgColor//UIColor.black.cgColor
+            //adding the text
+            returnButton.setTitle(buttonLabel, for: .normal)
+            returnButton.backgroundColor = UIColor.white
+            returnButton.setTitleColor(Environment.textColor, for: .normal)
+            returnButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
             returnButton.addTarget(self, action: #selector(buttonDelegate), for: .touchUpInside)
             self.addSubview(returnButton)
         }
         
         func createRoundButton(buttonLabel: String, posX: Double, posY: Double) {
-            let returnButton = UIButton(frame: CGRect(x: buttonSize.width * CGFloat(posX), y: (CGFloat(posY) * buttonSize.height), width: 1.5 * buttonSize.width, height: buttonSize.height * 1.5))
+            let returnButton = UIButton(frame: CGRect(x: buttonSize.width * CGFloat(posX), y: (CGFloat(posY) * buttonSize.height), width: 1.25 * buttonSize.width, height: buttonSize.height * 1.25))
             //making it rounder
             returnButton.backgroundColor = .clear
-            returnButton.layer.cornerRadius = 3
+            returnButton.layer.cornerRadius = 10
             returnButton.layer.borderWidth = 1
             returnButton.layer.borderColor = Environment.textColor.cgColor//UIColor.black.cgColor
             //adding the text
             returnButton.setTitle(buttonLabel, for: .normal)
-            returnButton.backgroundColor = Environment.textColor
-            returnButton.setTitleColor(UIColor.white, for: .normal)
-            returnButton.titleLabel?.font = UIFont.systemFont(ofSize: 20.0)
+            returnButton.backgroundColor = UIColor.white
+            returnButton.setTitleColor(Environment.textColor, for: .normal)
+            returnButton.titleLabel?.font = UIFont.systemFont(ofSize: 13)
             returnButton.addTarget(self, action: #selector(buttonDelegate), for: .touchUpInside)
             self.addSubview(returnButton)
         }
@@ -73,48 +95,43 @@ public class MyView: UIView {
         func addRules(ruleText: String, posX: Double, posY: Double) {
             let rule = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(posX), y: (CGFloat(posY) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
             rule.text = ruleText
-            rule.font = UIFont.systemFont(ofSize: 10)
+            rule.font = UIFont.systemFont(ofSize: 9.25)
             self.addSubview(rule)
         }
 
         //setting up the UI
         //setting up the non interactive buttons
-        createDefaultButton(buttonLabel: ButtonTexts.Play.rawValue, posX: 1, posY: 33.5)
+        createDefaultButton(buttonLabel: ButtonTexts.Play.rawValue, posX: 1, posY: 33.75)
         createDefaultButton(buttonLabel: ButtonTexts.Step.rawValue, posX: 6, posY: 35.5)
         createDefaultButton(buttonLabel: ButtonTexts.Clear.rawValue, posX: 1, posY: 35.5)
-        createRoundButton(buttonLabel: ButtonTexts.Minus.rawValue, posX: 6, posY: 33.5)
-        createRoundButton(buttonLabel: ButtonTexts.Plus.rawValue, posX: 9, posY: 33.5)
-        
-        //Setting up the speed button with an UIStepper
-//        let speedButton = UIStepper(frame: CGRect(x: buttonSize.width * CGFloat(8.8), y: (CGFloat(31.2) * buttonSize.height), width: 2, height: 2))
-//        speedButton.minimumValue = 1
-//        speedButton.maximumValue = 3
-//        speedButton.autorepeat = false
-//        speedButton.tintColor = UIColor.white
-//        speedButton.transform.scaledBy(x: 0.5, y: 0.5)
-//        speedButton.layer.cornerRadius = 5
-//        speedButton.backgroundColor = Environment.textColor
-//        speedButton.addTarget(self, action: #selector(stepperValueChanged(sender:)), for: .valueChanged)
-//        self.addSubview(speedButton)
+        createRoundButton(buttonLabel: ButtonTexts.Minus.rawValue, posX: 6, posY: 33.75)
+        createRoundButton(buttonLabel: ButtonTexts.Plus.rawValue, posX: 9.25, posY: 33.75)
+        //settind up the template buttons:
+        createPatternButton(buttonLabel: ButtonTexts.RPentomino.rawValue, posX: 1.2, posY: 2.8)
+        createPatternButton(buttonLabel: ButtonTexts.Flower.rawValue, posX: 6.8, posY: 2.8)
+        createPatternButton(buttonLabel: ButtonTexts.Pulsar.rawValue, posX: 12.4, posY: 2.8)
+        createPatternButton(buttonLabel: ButtonTexts.TenCellRow.rawValue, posX: 18, posY: 2.8)
+        createPatternButton(buttonLabel: ButtonTexts.Glider.rawValue, posX: 23.6, posY: 2.8)
         
         //Setting up the UILabels
-        let speedLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(6.6), y: (CGFloat(32.2) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
-        speedLabel.text = "Speed"
-        speedLabel.textColor = Environment.textColor
-        speedLabel.font = UIFont.boldSystemFont(ofSize: speedLabel.font.pointSize+1)
-        self.addSubview(speedLabel)
+//        let speedLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(6.6), y: (CGFloat(32.2) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
+//        speedLabel.text = "Speed"
+//        speedLabel.textColor = Environment.textColor
+//        speedLabel.font = UIFont.boldSystemFont(ofSize: speedLabel.font.pointSize+1)
+//        self.addSubview(speedLabel)
         
         //setting up the stater value of the speedNumber label
-        speedNumber = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(7.7), y: (CGFloat(33.6) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
+        speedNumber = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(7.65), y: (CGFloat(33.90) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
         speedNumber.text = "1x"
+        speedNumber.font = UIFont.boldSystemFont(ofSize: 18)
         speedNumber.textColor = Environment.textColor
         self.addSubview(speedNumber)
         
         //Setting up the rules title
-        let rulesLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(11.3), y: (CGFloat(32.2) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
+        let rulesLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(11.2), y: (CGFloat(32.5) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
         rulesLabel.text = "Rules"
         rulesLabel.textColor = Environment.textColor
-        rulesLabel.font = UIFont.boldSystemFont(ofSize: rulesLabel.font.pointSize+1.5)
+        rulesLabel.font = UIFont.boldSystemFont(ofSize: rulesLabel.font.pointSize)
         self.addSubview(rulesLabel)
         
         //setting rules
@@ -124,19 +141,11 @@ public class MyView: UIView {
         addRules(ruleText: "If a dead cell has three neighbors it comes alive.", posX: 11.3, posY: 35.9)
         
         //setting the titleLabel
-        let titleLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(8), y: (CGFloat(0.5) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height*2))
-        titleLabel.text = "Conway's Game of Life"
+        let titleLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(9), y: (CGFloat(0.5) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height*2))
+        titleLabel.text = "conway's game of life"
         titleLabel.textColor = Environment.secondaryColor
-        titleLabel.font = UIFont.boldSystemFont(ofSize: rulesLabel.font.pointSize+1)
+        titleLabel.font = UIFont.boldSystemFont(ofSize: rulesLabel.font.pointSize)
         self.addSubview(titleLabel)
-        //---------------------------------------------------------------------------------------------------------------------------------------------
-        //TESTES QUE VAO SER EXCLUIDOS
-        //---------------------------------------------------------------------------------------------------------------------------------------------
-        board[14][15].alive = true
-        board[14][16].alive = true
-        board[15][14].alive = true
-        board[15][15].alive = true
-        board[16][15].alive = true
         return board
     }
     
@@ -165,18 +174,21 @@ public class MyView: UIView {
             self.speedNumber.text = "`x"
         }
     }
+
+    public func configDomination() -> [[Cell]] {
+        return []
+    }
     
-//    @objc func stepperValueChanged(sender: UIStepper) {
-//        stepperDelegate?.stepperValueChanged(sender)
-////        if(sender.value == 1) {
-////            self.speedNumber.text = "1x"
-////        }
-////        else if(sender.value == 2){
-////            self.speedNumber.text = "2x"
-////        }
-////        else {
-////            self.speedNumber.text = "3x"
-////        }
-//
-//    }
+}
+
+public func conwaysLife(mode: String) -> MyView{
+    var view: MyView = MyView()
+    if mode.uppercased() == "PLAY" {
+        view = MyView(frame: CGRect(x: 20, y: 0, width: 480, height: 600))
+    }
+    else if mode.uppercased() == "DOMINATION" {
+        
+    }
+    
+    return view
 }

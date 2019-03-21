@@ -3,11 +3,7 @@
 import PlaygroundSupport
 import UIKit
 
-
-let view = MyView(frame: CGRect(x: 20, y: 0, width: 480, height: 600))
+let view = conwaysLife(mode: "play")
 let controller = Controller(myView: view)
-
-view.backgroundColor = .white
-
 
 PlaygroundPage.current.liveView = view
