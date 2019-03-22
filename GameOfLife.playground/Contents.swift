@@ -4,7 +4,7 @@ import PlaygroundSupport
 import UIKit
 
 let view = conwaysLife()
-var mode = "Playz"
+var mode = "padslas"
 
 let controller = Controller(mode: mode, myView: view)
 

@@ -16,9 +16,12 @@ public class Controller: ButtonDelegate, domDelegate {
         if mode.uppercased() == "PLAY" {
             self.board = myView.configPlay()
         }
-        else {
+        else if mode.uppercased() == "CHALLENGE"{
             self.board = myView.configDomination()
         }//self.board = myView.configPlay()
+        else {
+            self.board = myView.Error()
+        }
         myView.delegate = self //sets the controller as the delegate of myView
         myView.domDelegate = self
     }

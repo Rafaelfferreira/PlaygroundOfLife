@@ -227,6 +227,35 @@ public class MyView: UIView {
         return board
     }
     
+    public func Error() -> [[Cell]] {
+        self.backgroundColor = .white
+        
+        let error = UILabel(frame: CGRect(x: 180, y: 100, width: 300, height: 200))
+        error.text = "Error"
+        error.font = UIFont.boldSystemFont(ofSize: 60)
+        error.textColor = Environment.secondaryColor
+        self.addSubview(error)
+        
+        var errorMessage = UILabel(frame: CGRect(x: 80, y: 150, width: 340, height: 200))
+        errorMessage.text = "It seems like your trying to access"
+        errorMessage.font = UIFont.boldSystemFont(ofSize: 20)
+        errorMessage.textColor = Environment.textColor
+        self.addSubview(errorMessage)
+        
+        errorMessage = UILabel(frame: CGRect(x: 115, y: 170, width: 340, height: 200))
+        errorMessage.text = "a mode that doesn't exist 🤔"
+        errorMessage.font = UIFont.boldSystemFont(ofSize: 20)
+        errorMessage.textColor = Environment.textColor
+        self.addSubview(errorMessage)
+        
+        errorMessage = UILabel(frame: CGRect(x: 70, y: 200, width: 340, height: 200))
+        errorMessage.text = "The 2 methods currently implemented are \"Play\" and \"Challenge\""
+        errorMessage.font = UIFont.boldSystemFont(ofSize: 10)
+        errorMessage.textColor = UIColor.gray
+        self.addSubview(errorMessage)
+        
+        return []
+    }
     public func setRPentominoDom(board: [[Cell]]) {
         var pentominoCoordinates: [(line: Int,column: Int)] = [(3,3),(3,4),(4,2),(4,3),(5,3)]
         
@@ -238,8 +267,6 @@ public class MyView: UIView {
         //making two of the first cells friendly
         let friendly = pentominoCoordinates.remove(at: Int.random(in: 0..<pentominoCoordinates.count))
         board[friendly.line][friendly.column].backgroundColor = Environment.friendColor
-//        friendly = pentominoCoordinates.remove(at: Int.random(in: 0..<pentominoCoordinates.count))
-//        board[friendly.line][friendly.column].backgroundColor = Environment.friendColor
         
         updateNeighbours(board: board)
     }
@@ -256,7 +283,7 @@ public class MyView: UIView {
         var subDefaultMessage: UILabel
         
         //the label "SubDefaultMessage" prints the same 3 lines on the popup with the player winning or losing
-        subDefaultMessage = UILabel(frame: CGRect(x: 140, y: 262, width: 200, height: 20))
+        subDefaultMessage = UILabel(frame: CGRect(x: 146, y: 262, width: 200, height: 20))
         subDefaultMessage.text = "To retry just run this playground's code"
         subDefaultMessage.font = UIFont.systemFont(ofSize: 10)
         subDefaultMessage.textColor = UIColor.gray
@@ -268,8 +295,14 @@ public class MyView: UIView {
         subDefaultMessage.textColor = UIColor.gray
         self.addSubview(subDefaultMessage)
         
-        subDefaultMessage = UILabel(frame: CGRect(x: 140, y: 286, width: 210, height: 20))
-        subDefaultMessage.text = "play mode by typing the word \"Play\""
+        subDefaultMessage = UILabel(frame: CGRect(x: 146, y: 286, width: 210, height: 20))
+        subDefaultMessage.text = "play mode by \"Challenge\" to \"Play\" on"
+        subDefaultMessage.font = UIFont.systemFont(ofSize: 10)
+        subDefaultMessage.textColor = UIColor.gray
+        self.addSubview(subDefaultMessage)
+        
+        subDefaultMessage = UILabel(frame: CGRect(x: 185, y: 298, width: 210, height: 20))
+        subDefaultMessage.text = "\"var mode\" in the console"
         subDefaultMessage.font = UIFont.systemFont(ofSize: 10)
         subDefaultMessage.textColor = UIColor.gray
         self.addSubview(subDefaultMessage)
@@ -288,10 +321,16 @@ public class MyView: UIView {
             self.addSubview(subMessage)
         }
         else {
-            mainMessage = UILabel(frame: CGRect(x: 182, y: 210, width: 200, height: 30))
+            mainMessage = UILabel(frame: CGRect(x: 165, y: 210, width: 200, height: 30))
             mainMessage.text = "Congratulations!"
             mainMessage.font = UIFont.boldSystemFont(ofSize: 20)
             self.addSubview(mainMessage)
+            
+            subMessage = UILabel(frame: CGRect(x: 145, y: 240, width: 250, height: 20))
+            subMessage.text = "You were able to beat life's complexity!"
+            subMessage.font = UIFont.systemFont(ofSize: 10)
+            subMessage.textColor = UIColor(cgColor: UIColor.gray.cgColor)
+            self.addSubview(subMessage)
         }
     }
     
