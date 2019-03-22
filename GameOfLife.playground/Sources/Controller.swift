@@ -25,21 +25,52 @@ public class Controller: ButtonDelegate, domDelegate {
     
     //a cell was pressed on DOMINATION mode
     public func cellDidPress(_ button: Cell) {
-        if locked == false {
-            button.alive = !button.alive
-            button.active = true
-            if button.alive == true {
-                button.backgroundColor = Environment.friendColor
+        
+            if locked == false { //if the board is not locked
+                if button.computerLocked == false {
+                    button.alive = !button.alive
+                    button.active = true
+                    if button.alive == true {
+                        button.backgroundColor = Environment.friendColor
+                    }
+                    locked = true
+                    button.computerLocked = true
+                    updateNeighbours()
+                }
             }
-            locked = true
-            updateNeighbours()
+            else {
+                if button.active == true { //if the cell selected was the one the player chose before pressing play and is just changing his mind
+                    locked = false
+                    button.active = false
+                    button.computerLocked = false
+                    //button.computerLocked = false
+                    button.alive = !button.alive
+                    updateNeighbours()
+                }
+            }
+    }
+    
+    public func didPLayerWinGame(_ button: UIButton) -> Bool {
+        var redCells: Int = 0
+        var blueCells: Int = 0
+        for line in board { //goes through each line
+            for column in line { //goes through each column
+                if column.alive == true {
+                    if column.backgroundColor == Environment.friendColor {
+                        blueCells += 1
+                    }
+                    else {
+                        redCells += 1
+                    }
+                }
+            }
+        }
+        
+        if blueCells > redCells {
+            return true
         }
         else {
-            if button.active == true {
-                locked = false
-                button.alive = !button.alive
-                updateNeighbours()
-            }
+            return false
         }
     }
     
@@ -145,6 +176,7 @@ public class Controller: ButtonDelegate, domDelegate {
         //scans the board and find which cells would change
         for (lineIndex, line) in board.enumerated() { //goes through each line
             for (columnIndex, column) in line.enumerated() { //goes through each column
+                column.active = false
                 aliveNeighbours = checkNeighbours(cell: column)
                 if (column.alive == false) { //testing the conditions on dead cells
                     if aliveNeighbours == 3 {
@@ -162,17 +194,15 @@ public class Controller: ButtonDelegate, domDelegate {
             }
         }
         
-        //changes alive cells to dead when appropriate
-        for cell in kill {
-            board[cell.line][cell.column].alive = false
-        }
         //changes dead cells to alive when appropriate
         for cell in live {
             var redNeighbours = 0
             var blueNeighbours = 0
             board[cell.line][cell.column].alive = true
+            board[cell.line][cell.column].computerLocked = true
             
             for neighbour in board[cell.line][cell.column].neighbours { //see how many friendly and unfriendly neighbours it has
+                //print("\(neighbour.line), \(neighbour.column)")
                 if board[neighbour.line][neighbour.column].backgroundColor == Environment.aliveCellColor {
                     redNeighbours += 1
                 }
@@ -180,10 +210,17 @@ public class Controller: ButtonDelegate, domDelegate {
                     blueNeighbours += 1
                 }
             }
+            //print("Blue: \(blueNeighbours), Red: \(redNeighbours)")
             if blueNeighbours > redNeighbours {
                 board[cell.line][cell.column].backgroundColor = Environment.friendColor
             }
             
+        }
+        
+        //changes alive cells to dead when appropriate
+        for cell in kill {
+            board[cell.line][cell.column].alive = false
+            board[cell.line][cell.column].computerLocked = false
         }
         
         //making sure that theres no leftover on the control array

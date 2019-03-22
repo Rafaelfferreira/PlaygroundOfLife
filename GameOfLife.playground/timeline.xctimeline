@@ -2,5 +2,10 @@
 <Timeline
    version = "3.0">
    <TimelineItems>
+      <LoggerValueHistoryTimelineItem
+         documentLocation = "file:///Users/rafaelferreira/Documents/WWDC19/PlaygroundOfLife/GameOfLife.playground#CharacterRangeLen=54&amp;CharacterRangeLoc=144&amp;EndingColumnNumber=0&amp;EndingLineNumber=9&amp;StartingColumnNumber=0&amp;StartingLineNumber=8&amp;Timestamp=574971963.723713"
+         selectedRepresentationIndex = "0"
+         shouldTrackSuperviewWidth = "NO">
+      </LoggerValueHistoryTimelineItem>
    </TimelineItems>
 </Timeline>

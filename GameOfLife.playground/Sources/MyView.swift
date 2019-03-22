@@ -8,6 +8,8 @@ public class MyView: UIView {
     var speed: Int = 1//Integer that will store the current speed
     var speedNumber: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0)) //the only label on the view that needs to be constantly updated
     let buttonSize = CGSize(width: Int(Environment.screenWidth)/Environment.proportionGrid, height: Int(Environment.screenHeight)/Environment.proportionGrid)
+    var turns: Int = 10 //how many turns are left on the domination game
+    var playerWin: Bool = false //if the player won the domination game
     
     //function that creates buttons with the default style of this playground.
     //the X and Y positions are relative to the width and the height of the cells
@@ -171,39 +173,53 @@ public class MyView: UIView {
         }
         
         //setting the titleLabel
-        let titleLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(4.2), y: (CGFloat(0.5) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height*2))
+        let titleLabel = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(4.4), y: (CGFloat(0.5) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height*2))
         titleLabel.text = "conway's game of life"
         titleLabel.textColor = Environment.secondaryColor
         titleLabel.font = UIFont.boldSystemFont(ofSize: titleLabel.font.pointSize)
         self.addSubview(titleLabel)
         
+        let turnsLabe = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(4.85), y: (CGFloat(2.75) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
+        turnsLabe.text = "Turns Left:"
+        turnsLabe.font = UIFont.boldSystemFont(ofSize: 23)
+        turnsLabe.textColor = Environment.textColor
+        self.addSubview(turnsLabe)
+        
+        //setting up the stater value of the speedNumber label, on the Domination mode this var store how many turns are left until the end of the game!
+        speedNumber = UILabel(frame: CGRect(x: buttonSize.width * CGFloat(8.1), y: (CGFloat(2.75) * buttonSize.height), width: buttonSize.width*20, height: buttonSize.height))
+        speedNumber.text = String(turns)
+        speedNumber.font = UIFont.boldSystemFont(ofSize: 23)
+        speedNumber.textColor = Environment.textColor
+        self.addSubview(speedNumber)
+        
+        
         //setting up the label on the title of the rules
-        let rulesLabel = UILabel(frame: CGRect(x: 100, y: 510, width: buttonSize.width*20, height: buttonSize.height))
-        rulesLabel.text = "Life rules"
+        let rulesLabel = UILabel(frame: CGRect(x: 100, y: 495, width: buttonSize.width*19, height: buttonSize.height))
+        rulesLabel.text = "Rules"
         rulesLabel.textColor = Environment.textColor
         rulesLabel.font = UIFont.boldSystemFont(ofSize: rulesLabel.font.pointSize)
         self.addSubview(rulesLabel)
         
-        //Addindg the playButton - THIS NAME IS PROBABLY GOING TO CHANGE
-        let returnButton = UIButton(frame: CGRect(x: 150, y: 440, width: buttonSize.width * 1.25, height: buttonSize.height * 1.25))
+        //Addindg the next turn
+        let returnButton = UIButton(frame: CGRect(x: 190, y: 440, width: 100, height: buttonSize.height * 1.25))
         //making it rounder
         returnButton.backgroundColor = .clear
         returnButton.layer.cornerRadius = 10
         returnButton.layer.borderWidth = 1
         returnButton.layer.borderColor = Environment.textColor.cgColor//UIColor.black.cgColor
         //adding the text
-        returnButton.setTitle("Play", for: .normal)
-        returnButton.backgroundColor = UIColor.white
-        returnButton.setTitleColor(Environment.textColor, for: .normal)
+        returnButton.setTitle("Next turn", for: .normal)
+        returnButton.backgroundColor = Environment.textColor
+        returnButton.setTitleColor(UIColor.white, for: .normal)
         returnButton.titleLabel?.font = UIFont.systemFont(ofSize: 13)
         returnButton.addTarget(self, action: #selector(playButtonDomination), for: .touchUpInside)
         self.addSubview(returnButton)
         
         //setting rules
-        addRules(ruleText: "Each cell with less than 2 neighbors dies by underpopulation.", posX: 6.3, posY: 33.5)
-        addRules(ruleText: "Each cell with more than 3 neighbors dies by overpopulation.", posX: 6.3, posY: 34.3)
-        addRules(ruleText: "Each cell with two or three neighbors survives.", posX: 6.3, posY: 35.1)
-        addRules(ruleText: "If a dead cell has three neighbors it comes alive.", posX: 6.3, posY: 35.9)
+        addRules(ruleText: "Each cell with less than 2 neighbors dies by underpopulation.", posX: 6.3, posY: 32.5)
+        addRules(ruleText: "Each cell with more than 3 neighbors dies by overpopulation.", posX: 6.3, posY: 33.3)
+        addRules(ruleText: "Each cell with two or three neighbors survives.", posX: 6.3, posY: 34.1)
+        addRules(ruleText: "If a dead cell has three neighbors it comes alive.", posX: 6.3, posY: 34.9)
         
         //setting um the RPentomino starting pattern
         setRPentominoDom(board: board)
@@ -212,27 +228,94 @@ public class MyView: UIView {
     }
     
     public func setRPentominoDom(board: [[Cell]]) {
-        board[3][3].alive = true
-        board[3][4].alive = true
-        board[4][2].alive = true
-        board[4][3].alive = true
-        board[5][3].alive = true
+        var pentominoCoordinates: [(line: Int,column: Int)] = [(3,3),(3,4),(4,2),(4,3),(5,3)]
+        
+        for cell in pentominoCoordinates {
+            board[cell.line][cell.column].alive = true
+            board[cell.line][cell.column].computerLocked = true
+        }
+        
+        //making two of the first cells friendly
+        let friendly = pentominoCoordinates.remove(at: Int.random(in: 0..<pentominoCoordinates.count))
+        board[friendly.line][friendly.column].backgroundColor = Environment.friendColor
+//        friendly = pentominoCoordinates.remove(at: Int.random(in: 0..<pentominoCoordinates.count))
+//        board[friendly.line][friendly.column].backgroundColor = Environment.friendColor
         
         updateNeighbours(board: board)
     }
     
+    public func endGame() {
+        
+        let endPopUp = UIView(frame: CGRect(x: 115, y: 200, width: 250, height: 125))
+        endPopUp.backgroundColor = Environment.popUpColor
+        endPopUp.layer.cornerRadius = 5
+        self.addSubview(endPopUp)
+        
+        var mainMessage: UILabel
+        var subMessage: UILabel
+        var subDefaultMessage: UILabel
+        
+        //the label "SubDefaultMessage" prints the same 3 lines on the popup with the player winning or losing
+        subDefaultMessage = UILabel(frame: CGRect(x: 140, y: 262, width: 200, height: 20))
+        subDefaultMessage.text = "To retry just run this playground's code"
+        subDefaultMessage.font = UIFont.systemFont(ofSize: 10)
+        subDefaultMessage.textColor = UIColor.gray
+        self.addSubview(subDefaultMessage)
+        
+        subDefaultMessage = UILabel(frame: CGRect(x: 140, y: 274, width: 210, height: 20))
+        subDefaultMessage.text = "again. You can also change it back to free"
+        subDefaultMessage.font = UIFont.systemFont(ofSize: 10)
+        subDefaultMessage.textColor = UIColor.gray
+        self.addSubview(subDefaultMessage)
+        
+        subDefaultMessage = UILabel(frame: CGRect(x: 140, y: 286, width: 210, height: 20))
+        subDefaultMessage.text = "play mode by typing the word \"Play\""
+        subDefaultMessage.font = UIFont.systemFont(ofSize: 10)
+        subDefaultMessage.textColor = UIColor.gray
+        self.addSubview(subDefaultMessage)
+        
+        if playerWin == false {
+            mainMessage = UILabel(frame: CGRect(x: 188, y: 210, width: 200, height: 22))
+            mainMessage.text = "You Lost :("
+            mainMessage.font = UIFont.boldSystemFont(ofSize: 20)
+            mainMessage.textColor = UIColor.gray
+            self.addSubview(mainMessage)
+            
+            subMessage = UILabel(frame: CGRect(x: 140, y: 240, width: 250, height: 20))
+            subMessage.text = "But that's okay, Life can get pretty hard!"
+            subMessage.font = UIFont.systemFont(ofSize: 10)
+            subMessage.textColor = UIColor(cgColor: UIColor.gray.cgColor)
+            self.addSubview(subMessage)
+        }
+        else {
+            mainMessage = UILabel(frame: CGRect(x: 182, y: 210, width: 200, height: 30))
+            mainMessage.text = "Congratulations!"
+            mainMessage.font = UIFont.boldSystemFont(ofSize: 20)
+            self.addSubview(mainMessage)
+        }
+    }
+    
     //what happens when you click a cell
-    @objc func cellAction(sender: Cell!) {
+    @objc func cellAction(sender: Cell) {
         sender.alive = !sender.alive
     }
     
     //what happens when you click a cell
-    @objc func dominationCellAction(sender: Cell!) {
+    @objc func dominationCellAction(sender: Cell) {
         domDelegate?.cellDidPress(sender)
     }
     
-    @objc func playButtonDomination(sender: UIButton!) {
-        domDelegate?.playDidPressDom(sender)
+    @objc func playButtonDomination(sender: UIButton) {
+        if turns > 1 {
+            turns -= 1
+            domDelegate?.playDidPressDom(sender)
+        }
+        else if turns == 1 {
+            turns -= 1
+            playerWin = domDelegate?.didPLayerWinGame(sender) ?? false
+            endGame()
+        }
+        self.speedNumber.text = String(turns)
     }
     
     @objc func buttonDelegate(sender: UIButton) {

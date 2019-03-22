@@ -24,6 +24,7 @@ enum Environment {
     static let textColor: UIColor = UIColor(red: 0.396, green: 0.803, blue: 0.490, alpha: 1)
     static let secondaryColor: UIColor = UIColor(red: 0.407, green: 0.282, blue: 0.776, alpha: 1)
     static let friendColor: UIColor = UIColor(red: 0.537, green: 0.831, blue: 0.898, alpha: 1)
+    static let popUpColor: UIColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.95)
 }
 
 //the labels of the buttons on the playground
@@ -56,19 +57,22 @@ public class Cell: UIButton {
     }
     var active: Bool
     var position: (Int,Int)
-    var neighbours: [(line: Int,column: Int)]!
+    var neighbours: [(line: Int,column: Int)]
     var boardSize: (nLines: Int, nColumns: Int)
+    var computerLocked: Bool //A var that keeps them on the board while on domination mode
     
     public init(frame: CGRect, position: (Int,Int), boardSize: (Int, Int)) {
         self.alive = false
         self.active = false
+        self.computerLocked = false
         self.position = position
         self.boardSize = boardSize
+        self.neighbours = []
         super.init(frame: frame)
         self.neighbours = self.findNeighbours(position: position)
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -96,4 +100,5 @@ protocol ButtonDelegate: class { //delegates the managing of a button to another
 protocol domDelegate: class {
     func cellDidPress(_ button: Cell)
     func playDidPressDom(_ button: UIButton)
+    func didPLayerWinGame(_ button: UIButton) -> Bool
 }
