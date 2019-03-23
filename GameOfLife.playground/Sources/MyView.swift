@@ -296,13 +296,13 @@ public class MyView: UIView {
         self.addSubview(subDefaultMessage)
         
         subDefaultMessage = UILabel(frame: CGRect(x: 146, y: 286, width: 210, height: 20))
-        subDefaultMessage.text = "play mode by \"Challenge\" to \"Play\" on"
+        subDefaultMessage.text = "play mode by going back to the previous"
         subDefaultMessage.font = UIFont.systemFont(ofSize: 10)
         subDefaultMessage.textColor = UIColor.gray
         self.addSubview(subDefaultMessage)
         
         subDefaultMessage = UILabel(frame: CGRect(x: 185, y: 298, width: 210, height: 20))
-        subDefaultMessage.text = "\"var mode\" in the console"
+        subDefaultMessage.text = "page of the playground."
         subDefaultMessage.font = UIFont.systemFont(ofSize: 10)
         subDefaultMessage.textColor = UIColor.gray
         self.addSubview(subDefaultMessage)
@@ -351,6 +351,7 @@ public class MyView: UIView {
         }
         else if turns == 1 {
             turns -= 1
+            domDelegate?.playDidPressDom(sender)
             playerWin = domDelegate?.didPLayerWinGame(sender) ?? false
             endGame()
         }

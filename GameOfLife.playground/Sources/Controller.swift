@@ -15,6 +15,7 @@ public class Controller: ButtonDelegate, domDelegate {
         self.mode = mode
         if mode.uppercased() == "PLAY" {
             self.board = myView.configPlay()
+            rPentomino()
         }
         else if mode.uppercased() == "CHALLENGE"{
             self.board = myView.configDomination()
