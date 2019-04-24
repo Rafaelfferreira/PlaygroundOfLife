@@ -3,7 +3,7 @@
 A **WWDC19** scholarship submission.
 
 ![](https://img.shields.io/badge/status-accepted-brightgreen.svg)
-![](https://img.shields.io/badge/swift-5.0-orange.svg)
+![](https://img.shields.io/badge/swift-4.7-orange.svg)
 
 ## Description
 
